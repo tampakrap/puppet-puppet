@@ -53,11 +53,8 @@ class puppet::server (
   $gentoo_keywords    = $puppet::params::master_keywords,
 ) inherits puppet::params {
 
-  $master = true
-
   include puppet
   include puppet::server::config
-  include puppet::package
 
   # ---
   # The site.pp is set in the puppet.conf, remove site.pp here to avoid confusion.

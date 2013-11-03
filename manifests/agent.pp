@@ -51,7 +51,6 @@ class puppet::agent(
 
   include puppet
   include puppet::agent::config
-  include puppet::package
 
   class { '::puppet::agent::monitor': enable => $monitor_service }
 

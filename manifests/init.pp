@@ -14,4 +14,6 @@ class puppet (
   $rundir = $puppet::params::puppet_rundir,
 ) inherits puppet::params {
 
+  include puppet::package
+
 }

@@ -1,6 +1,7 @@
 class puppet::package {
 
   include puppet::params
+  include puppet::agent
 
   if $puppet::agent::manage_repos {
     include puppet::package::repository
@@ -13,7 +14,8 @@ class puppet::package {
       ensure => $puppet::agent::ensure;
     }
 
-    if $puppet::server::master and $puppet::params::master_package != $puppet::params::agent_package {
+    if $::puppet_master and $puppet::params::master_package != $puppet::params::agent_package {
+      include puppet::server
       package { $puppet::params::master_package:
         ensure => $puppet::server::ensure;
       }
