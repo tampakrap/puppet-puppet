@@ -40,6 +40,7 @@ class puppet::server (
   $reports            = ["store", "https"],
   $reporturl          = "http://$fqdn/reports",
   $reportfrom         = undef,
+  $use_cached_catalog = true,
   $servertype         = "unicorn",
   $ca                 = false,
   $bindaddress        = '::',
