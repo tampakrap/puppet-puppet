@@ -30,9 +30,9 @@ class puppet::server::config {
     'group':
       setting => 'group',
       value   => 'puppet';
-    'use_cached_catalog':
-      setting => 'use_cached_catalog',
-      value   => $puppet::server::use_cached_catalog;
+    'usecacheonfailure':
+      setting => 'usecacheonfailure',
+      value   => $puppet::server::usecacheonfailure;
   }
 
   if $puppet::server::ca {
