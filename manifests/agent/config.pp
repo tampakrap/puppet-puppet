@@ -1,9 +1,21 @@
 class puppet::agent::config {
   include puppet::params
 
+  if defined($puppet::server::servertype) {
+    case $puppet::server::servertype {
+      'passenger': { $service = 'httpd' }
+      'unicorn': { $service = '??' }
+      'thin': { $service = '??' }
+      'standalone': { $service = $puppet::params::master_service }
+    }
+  } else {
+    $service = 'undef'
+  }
+
   Ini_setting {
-    path    => $puppet::params::puppet_conf,
-    ensure  => 'present',
+    path   => $puppet::params::puppet_conf,
+    ensure => 'present',
+    notify => Service[$service],
   }
 
   ini_setting { 'server':

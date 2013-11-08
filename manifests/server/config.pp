@@ -3,10 +3,18 @@ class puppet::server::config {
   include puppet
   include puppet::params
 
+  case $puppet::server::servertype {
+    'passenger': { $service = 'httpd' }
+    'unicorn': { $service = '??' }
+    'thin': { $service = '??' }
+    'standalone': { $service = $puppet::params::master_service }
+  }
+
   Ini_setting {
     path    => $puppet::params::puppet_conf,
     ensure  => 'present',
     section => 'master',
+    notify  => Service[$service],
   }
 
   ini_setting {
