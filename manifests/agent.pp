@@ -45,6 +45,7 @@ class puppet::agent(
   $ensure          = 'present',
   $monitor_service = false,
   $environment     = "$::environment",
+  $usecacheonfailure = true,
   $gentoo_use      = $puppet::params::agent_use,
   $gentoo_keywords = $puppet::params::agent_keywords,
 ) inherits puppet::params {

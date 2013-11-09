@@ -30,9 +30,6 @@ class puppet::server::config {
     'group':
       setting => 'group',
       value   => 'puppet';
-    'usecacheonfailure':
-      setting => 'usecacheonfailure',
-      value   => $puppet::server::usecacheonfailure;
   }
 
   if $puppet::server::ca {

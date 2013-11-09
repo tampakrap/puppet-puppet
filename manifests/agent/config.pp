@@ -123,4 +123,10 @@ class puppet::agent::config {
     setting => 'configtimeout',
     value   => '360',
   }
+
+  ini_setting { 'usecacheonfailure':
+    section => 'agent',
+    setting => 'usecacheonfailure',
+    value   => $puppet::agent::usecacheonfailure,
+  }
 }
