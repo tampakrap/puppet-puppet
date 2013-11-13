@@ -2,12 +2,12 @@ class puppet::server::config {
 
   include puppet
   include puppet::params
+  include puppet::server
 
   case $puppet::server::servertype {
     'passenger': { $service = 'httpd' }
-    'unicorn': { $service = '??' }
-    'thin': { $service = '??' }
-    'standalone': { $service = $puppet::params::master_service }
+    'unicorn', 'thin': { $service = 'nginx' }
+    'standalone': { $service = $puppet::server::master_service }
   }
 
   Ini_setting {

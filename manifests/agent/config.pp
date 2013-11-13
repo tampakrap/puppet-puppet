@@ -1,12 +1,14 @@
 class puppet::agent::config {
+  include puppet
+  include puppet::agent
   include puppet::params
 
   if defined(Class['puppet::server']) {
+    include puppet::server
     case $puppet::server::servertype {
       'passenger': { $service = 'httpd' }
-      'unicorn': { $service = '??' }
-      'thin': { $service = '??' }
-      'standalone': { $service = $puppet::params::master_service }
+      'unicorn', 'thin': { $service = 'nginx' }
+      'standalone': { $service = $puppet::server::master_service }
     }
     Ini_setting {
       path   => $puppet::params::puppet_conf,
@@ -53,25 +55,25 @@ class puppet::agent::config {
   ini_setting { 'logdir':
     section => 'main',
     setting => 'logdir',
-    value   => $puppet::puppet_logdir,
+    value   => $puppet::logdir,
   }
 
   ini_setting { 'vardir':
     section => 'main',
     setting => 'vardir',
-    value   => $puppet::puppet_vardir,
+    value   => $puppet::vardir,
   }
 
   ini_setting { 'ssldir':
     section => 'main',
     setting => 'ssldir',
-    value   => $puppet::puppet_ssldir,
+    value   => $puppet::ssldir,
   }
 
   ini_setting { 'rundir':
     section => 'main',
     setting => 'rundir',
-    value   => $puppet::puppet_rundir,
+    value   => $puppet::rundir,
   }
 
   if $::operatingsystem == 'Ubuntu' {
