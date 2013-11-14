@@ -21,19 +21,6 @@ class puppet::package::gentoo {
     $ensure   = $puppet::agent::ensure
   }
 
-  if $keywords {
-    package_keywords { 'dev-ruby/hiera':
-      keywords => $keywords,
-      target   => 'puppet',
-      before   => Portage::Package[$package],
-    }
-    package_keywords { 'app-vim/puppet-syntax':
-      keywords => $keywords,
-      target   => 'puppet',
-      before   => Portage::Package[$package],
-    }
-  }
-
   portage::package { $package:
     keywords => $keywords,
     use      => $use,
