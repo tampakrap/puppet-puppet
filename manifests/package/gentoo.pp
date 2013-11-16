@@ -3,11 +3,6 @@ class puppet::package::gentoo {
   include puppet::params
   include puppet::agent
 
-  package_use { 'sys-apps/net-tools':
-    use    => 'old-output',
-    target => 'puppet',
-  }
-
   if $::puppet_master {
     include puppet::server
     $keywords = $puppet::server::gentoo_keywords
