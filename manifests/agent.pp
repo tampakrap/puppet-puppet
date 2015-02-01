@@ -38,7 +38,7 @@ class puppet::agent(
   $report            = true,
   $report_server     = undef,
   $report_format     = undef,
-  $manage_repos      = true,
+  $manage_repos      = false,
   $environment       = $::environment,
   $pluginsync        = true,
   $certname          = $::clientcert,
