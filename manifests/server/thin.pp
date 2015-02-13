@@ -18,21 +18,6 @@ class puppet::server::thin {
   include ::thin
   include nginx
 
-  Ini_setting {
-    ensure  => 'present',
-    section => 'master',
-    path    => $puppet::params::puppet_conf,
-  }
-
-  ini_setting {
-    'ssl_client_header':
-      ensure  => 'absent',
-      setting => 'ssl_client_header';
-    'ssl_client_verify_header':
-      ensure  => 'absent',
-      setting => 'ssl_client_verify_header';
-  }
-
   $servers     = $::processorcount
   $servername  = pick($::puppet::server::servername, $::clientcert, $::fqdn)
   $thin_socket = "unix:${puppet::params::puppet_rundir}/puppetmaster.0.sock"

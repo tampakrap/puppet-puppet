@@ -27,38 +27,61 @@
 #  }
 #
 class puppet::server (
-  $autosign           = undef,
-  $bindaddress        = '0.0.0.0',
-  $ca                 = false,
-  $config_version_cmd = '/usr/bin/git --git-dir $confdir/environments/$environment/.git rev-parse --short HEAD 2>/dev/null || echo',
-  $dns_alt_names      = undef,
-  $enc                = '',
-  $enc_exec           = '',
-  $ensure             = 'present',
-  $directoryenvs      = true,
-  $environmentpath    = undef,
-  $basemodulepath     = undef,
-  $default_manifest   = undef,
-  $manage_package     = true,
-  $manifest           = '$confdir/modules/site/site.pp',
-  $modulepath         = ['$confdir/modules/site', '$confdir/env/$environment/dist'],
-  $parser             = undef,
-  $manage_puppetdb    = undef,
-  $report             = true,
-  $report_dir         = $puppet::params::report_dir,
-  $reportfrom         = undef,
-  $reports            = ['store', 'https'],
-  $reporturl          = "https://${::fqdn}/reports",
-  $servername         = $::fqdn,
-  $serverssl_ciphers  = undef,
-  $serverssl_protos   = undef,
-  $servertype         = 'unicorn',
-  $storeconfigs       = undef,
-  $stringify_facts    = false,
-  $package            = $puppet::params::master_package,
+  $autosign          = '',
+  $bindaddress       = '',
+  $ca                = false,
+  $config_version    = '',
+  $dns_alt_names     = [],
+  $enc               = '',
+  $enc_exec          = '',
+  $ensure            = 'present',
+  $directoryenvs     = true,
+  $environmentpath   = '',
+  $basemodulepath    = '',
+  $default_manifest  = '',
+  $manage_package    = true,
+  $manifest          = '',
+  $modulepath        = '',
+  $parser            = undef,
+  $manage_puppetdb   = false,
+  $report_dir        = $puppet::params::report_dir,
+  $reports           = [],
+  $reporturl         = '',
+  $servername        = $::fqdn,
+  $serverssl_ciphers = undef,
+  $serverssl_protos  = undef,
+  $servertype        = 'standalone',
+  $storeconfigs      = '',
+  $package           = $puppet::params::master_package,
+  $puppet_user       = $puppet::params::puppet_user,
+  $puppet_group      = $puppet::params::puppet_group,
 ) inherits puppet::params {
 
+  if $autosign { validate_bool($autosign) }
+  validate_bool($ca)
   validate_bool($directoryenvs)
+  if $directoryenvs {
+    if $environmentpath { validate_string($environmentpath) }
+    if $basemodulepath { validate_string($basemodulepath) }
+    if $default_manifest { validate_string($default_manifest) }
+  } else {
+    if $manifest { validate_string($manifest) }
+    if $modulepath { validate_string($modulepath) }
+    if $config_version { validate_string($config_version) }
+  }
+  validate_bool($manage_puppetdb)
+  validate_array($dns_alt_names)
+  validate_array($reports)
+  if $parser {
+    $parser_options = ['custom', 'future']
+    validate_re($parser, $parser_options)
+  }
+
+  $service = $servertype ? {
+    'passenger'    => 'httpd',
+    /unicorn|thin/ => 'nginx',
+    'standalone'   => $puppet::params::master_service,
+  }
 
   include puppet
   include puppet::server::config
@@ -104,7 +127,7 @@ class puppet::server (
       include puppet::server::standalone
     }
     default: {
-      err('Only "passenger", "thin", and "unicorn" are valid options for servertype')
+      err('Only "passenger", "thin", "unicorn" and "standalone" are valid options for servertype')
       fail('Servertype "$servertype" not implemented')
     }
   }
@@ -122,7 +145,7 @@ class puppet::server (
   # this will also install postgresql
   # for more detailed control over puppetdb settings, use the puppetdb
   # module directly rather than having puppet-puppet include it.
-  if $manage_puppetdb == true {
+  if $manage_puppetdb {
     include puppetdb
     include puppetdb::master::config
   }
