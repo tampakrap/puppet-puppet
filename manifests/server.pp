@@ -27,51 +27,44 @@
 #  }
 #
 class puppet::server (
-  $autosign          = '',
-  $bindaddress       = '',
+  $autosign          = undef,
+  $bindaddress       = undef,
   $ca                = false,
-  $config_version    = '',
-  $dns_alt_names     = [],
+  $config_version    = '/usr/bin/git --git-dir $confdir/environments/$environment/.git rev-parse --short HEAD 2>/dev/null || echo',
+  $dns_alt_names     = undef,
   $enc               = '',
   $enc_exec          = '',
   $ensure            = 'present',
   $directoryenvs     = true,
-  $environmentpath   = '',
-  $basemodulepath    = '',
-  $default_manifest  = '',
+  $environmentpath   = '$confdir/environments',
+  $basemodulepath    = undef,
+  $default_manifest  = undef,
   $manage_package    = true,
-  $manifest          = '',
-  $modulepath        = '',
+  $manifest          = undef,
+  $modulepath        = undef,
   $parser            = undef,
   $manage_puppetdb   = false,
   $report_dir        = $puppet::params::report_dir,
-  $reports           = [],
-  $reporturl         = '',
+  $reports           = undef,
+  $reporturl         = undef,
   $servername        = $::fqdn,
   $serverssl_ciphers = undef,
   $serverssl_protos  = undef,
   $servertype        = 'standalone',
-  $storeconfigs      = '',
+  $storeconfigs      = undef,
   $package           = $puppet::params::master_package,
-  $puppet_user       = $puppet::params::puppet_user,
-  $puppet_group      = $puppet::params::puppet_group,
 ) inherits puppet::params {
 
-  if $autosign { validate_bool($autosign) }
   validate_bool($ca)
   validate_bool($directoryenvs)
   if $directoryenvs {
-    if $environmentpath { validate_string($environmentpath) }
-    if $basemodulepath { validate_string($basemodulepath) }
-    if $default_manifest { validate_string($default_manifest) }
+    if $basemodulepath { validate_array($basemodulepath) }
   } else {
-    if $manifest { validate_string($manifest) }
-    if $modulepath { validate_string($modulepath) }
-    if $config_version { validate_string($config_version) }
+    if $modulepath { validate_array($modulepath) }
   }
   validate_bool($manage_puppetdb)
-  validate_array($dns_alt_names)
-  validate_array($reports)
+  if $dns_alt_names { validate_array($dns_alt_names) }
+  if $reports { validate_array($reports) }
   if $parser {
     $parser_options = ['custom', 'future']
     validate_re($parser, $parser_options)

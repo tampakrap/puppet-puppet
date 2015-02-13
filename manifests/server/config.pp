@@ -109,7 +109,7 @@ class puppet::server::config {
     'basemodulepath':
       ensure  => $basemodulepath_ensure,
       setting => 'basemodulepath',
-      value   => $puppet::server::basemodulepath;
+      value   => join(flatten([$puppet::server::basemodulepath]), ':');
     'default_manifest':
       ensure  => $default_manifest_ensure,
       setting => 'default_manifest',
@@ -144,11 +144,11 @@ class puppet::server::config {
       setting => 'ssl_client_verify_header',
       value   => 'HTTP_X_CLIENT_VERIFY';
     'autosign':
-      ensure  => $autosign_present,
+      ensure  => $autosign_ensure,
       setting => 'autosign',
       value   => $puppet::server::autosign;
     'dns_alt_names':
-      ensure  => $dns_alt_names_present,
+      ensure  => $dns_alt_names_ensure,
       setting => 'dns_alt_names',
       value   => join(flatten([$puppet::server::dns_alt_names ]), ', ');
     'parser':
