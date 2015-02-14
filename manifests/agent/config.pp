@@ -4,10 +4,7 @@ class puppet::agent::config {
     path    => $puppet::conf,
     section => 'agent',
     ensure  => 'present',
-  }
-
-  if defined(Service['puppet_agent']) {
-    Ini_setting { notify  => Service['puppet_agent'] }
+    notify  => Service['puppet_agent'],
   }
 
   if $puppet::agent::ca_server {
