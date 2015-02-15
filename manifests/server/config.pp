@@ -9,7 +9,7 @@ class puppet::server::config {
     notify  => Service[$puppet::server::service],
   }
 
-  if $puppet::server::servertype == 'standalone' and $bindaddress {
+  if $puppet::server::servertype == 'standalone' and $puppet::server::bindaddress {
     $bindaddress_ensure = 'present'
   } else {
     $bindaddress_ensure = 'absent'
