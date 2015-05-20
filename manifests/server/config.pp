@@ -72,49 +72,51 @@ class puppet::server::config {
     value   => $puppet::server::ca,
   }
 
-  if $puppet::server::servertype == 'standalone' {
-    ini_setting { 'bindaddress':
-      setting => 'bindaddress',
-      value   => $puppet::server::bindaddress,
-    }
+  if $puppet::server::servertype == 'standalone' and $puppet::server::bindaddress {
+    $bindaddress_ensure = 'present'
+  } else {
+    $bindaddress_ensure = 'absent'
   }
 
-  if $puppet::server::config_version_cmd {
-    ini_setting { 'config_version':
-      ensure  => $mod_ensure,
-      setting => 'config_version',
-      value   => $puppet::server::config_version_cmd,
-    }
+  ini_setting { 'bindaddress':
+    ensure  => $bindaddress_ensure,
+    setting => 'bindaddress',
+    value   => $puppet::server::bindaddress,
   }
 
   if $puppet::server::ssl_client_header {
-    ini_setting {
-      'ssl_client_header':
-        setting => 'ssl_client_header',
-        value   => $puppet::server::ssl_client_header;
-      'ssl_client_verify_header':
-        setting => 'ssl_client_verify_header',
-        value   => $puppet::server::ssl_client_verify_header;
-    }
+    $ssl_client_header_ensure = 'present'
+  } else {
+    $ssl_client_header_ensure = 'absent'
   }
 
-  if $puppet::server::report {
-    ini_setting {
-      'master_report':
-        setting => 'report',
-        value   => $puppet::server::report;
-      'reporturl':
-        setting => 'reporturl',
-        value   => $puppet::server::reporturl;
-    }
+  ini_setting { 'ssl_client_header':
+    ensure  => $ssl_client_header_ensure,
+    setting => 'ssl_client_header',
+    value   => $puppet::server::ssl_client_header,
+  }
+
+  ini_setting { 'ssl_client_verify_header':
+    ensure  => $ssl_client_header_ensure,
+    setting => 'ssl_client_verify_header',
+    value   => $puppet::server::ssl_client_verify_header,
+  }
+
+  ini_setting { 'reporturl':
+    setting => 'reporturl',
+    value   => $puppet::server::reporturl
   }
 
   if $puppet::server::reportfrom {
-    ini_setting {
-      'reportfrom':
-        setting => 'reportfrom',
-        value   => $puppet::server::reportfrom;
-    }
+    $reportfrom_ensure = 'present'
+  } else {
+    $reportfrom_ensure = 'absent'
+  }
+
+  ini_setting { 'reportfrom':
+    ensure => $reportfrom_ensure,
+    setting => 'reportfrom',
+    value   => $puppet::server::reportfrom;
   }
 
   unless empty($puppet::server::reports) {
@@ -143,10 +145,15 @@ class puppet::server::config {
   }
 
   if $puppet::server::dns_alt_names {
-    ini_setting { 'dns_alt_names':
-        setting => 'dns_alt_names',
-        value   =>  $puppet::server::dns_alt_names
-    }
+    $dns_alt_names_ensure = 'present'
+  } else {
+    $dns_alt_names_ensure = 'absent'
+  }
+
+  ini_setting { 'dns_alt_names':
+    ensure  => $dns_alt_names_ensure,
+    setting => 'dns_alt_names',
+    value   =>  $puppet::server::dns_alt_names
   }
 
   if $puppet::server::autosign {

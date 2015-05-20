@@ -44,7 +44,6 @@ class puppet::server (
   $modulepath         = ['$confdir/modules/site', '$confdir/env/$environment/dist'],
   $parser             = undef,
   $manage_puppetdb    = false,
-  $report             = true,
   $report_dir         = $puppet::params::report_dir,
   $reportfrom         = undef,
   $reports            = ['store', 'https'],
@@ -138,5 +137,4 @@ class puppet::server (
     include puppetdb
     include puppetdb::master::config
   }
-
 }
